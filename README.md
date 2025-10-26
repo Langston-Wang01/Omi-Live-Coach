@@ -34,3 +34,5 @@ BASETEN_API_KEY=your_key
 ```bash
 uvicorn main:app --reload --port 8000
 ```
+### Demo Video
+https://youtu.be/8VbbBePJzsY
