@@ -1,4 +1,4 @@
-# Omi Rizz Rating App
+# Omi Rizz App
 
 A real-time conversation analysis tool that listens to Omi's live transcription and provides Rizz scores, summaries, suggestions, and live feedback during and after conversations.
 
@@ -29,11 +29,6 @@ pip install -r requirements.txt
 Create a `.env` file in the project folder:
 ```env
 BASETEN_API_KEY=your_key
-```
-
-### Start Redis
-```bash
-redis-server
 ```
 
 ### Run the FastAPI server
