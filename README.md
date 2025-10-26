@@ -29,9 +29,6 @@ pip install -r requirements.txt
 Create a `.env` file in the project folder:
 ```env
 BASETEN_API_KEY=your_key
-REDIS_DB_HOST=localhost
-REDIS_DB_PORT=6379
-REDIS_DB_PASSWORD=your_password
 ```
 
 ### Start Redis
