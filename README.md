@@ -1,10 +1,9 @@
 # Omi Rizz App
-l
+
 A real-time conversation analysis tool that listens to Omi's live transcription and provides Rizz scores, summaries, suggestions, and live feedback during and after conversations.
 
 ## Goal
-
-Help users understand and improve their conversational presence by analyzing tone, pacing, and reciprocity, then offering insight into their overall "rizz."
+The Rizz App analyzes full conversations captured through Omi's transcription, offering live feedback during the interaction and a final Rizz score, summary, and personalized suggestions once the conversation ends.
 
 ## What "Rizz" Means
 
@@ -35,7 +34,3 @@ BASETEN_API_KEY=your_key
 ```bash
 uvicorn main:app --reload --port 8000
 ```
-
-## Summary
-
-The Rizz App analyzes full conversations captured through Omi's transcription, offering live feedback during the interaction and a final Rizz score, summary, and personalized suggestions once the conversation ends.
