@@ -40,10 +40,10 @@ Analyze the transcript using these conversational signals:
 - Comfort and pacing: speaking rate stability, pause tolerance.
 
 Compute normalized sub-scores for Warmth, Attentiveness, Reciprocity, and Comfort, then 
-aggregate them into a 0–100 Conversation Rizz Score. Provide:
+aggregate them into a 0 to 100 Conversation Rizz Score. Provide:
 1. The total score and sub-scores.
-2. A short, natural-language summary (1–2 sentences).
-3. 2–3 concise, forward-looking tips to improve future communication.
+2. A short, natural-language summary (1 to 2 sentences).
+3. 2 to 3 concise, forward-looking tips to improve future communication.
 
 All feedback must be:
 - Personalized to the tone, flow, and content of the conversation.
@@ -51,10 +51,10 @@ All feedback must be:
 - Respectful, constructive, and human-sounding.
 
 Your output should follow this format:
-Conversation Rizz: [0–100]
+Conversation Rizz: [0 to 100]
 Warmth: [score], Attentiveness: [score], Reciprocity: [score], Comfort: [score]
-Summary: [1–2 sentences]
-Tips: [2–3 short, forward-looking suggestions]
+Summary: [1 to 2 sentences]
+Tips: [2 to 3 short, forward-looking suggestions]
 """
 
 def custom_strip(s: str, chars: str = None) -> str:
