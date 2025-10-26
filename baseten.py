@@ -1,15 +1,14 @@
 # baseten.py
 import os
 import string
+import json
 from openai import OpenAI
 from dotenv import load_dotenv
 
-# Load environment variables from the .env file
 load_dotenv()
 
-# --- (The rest of your file is the same) ---
-
-COMMUNICATION_COACH_PROMPT = """
+# --- PROMPT for Live, In-Conversation Nudges ---
+LIVE_NUDGE_PROMPT ="""
 You are an expert communication coach analyzing a transcript of a live conversation.
 Maintain a lightweight “topics” memory to recall recurring themes, tone patterns, or 
 communication habits across turns and use it to generate more personalized follow-ups.
@@ -24,7 +23,39 @@ persists, vary the feedback by highlighting new context, impact, or phrasing to 
 Anchor every suggestion in something directly observable from the transcript, such as word choice, tone, pacing, or response timing.
 """
 
+# --- NEW: PROMPT for Final End-of-Conversation Summary ---
+FINAL_SUMMARY_PROMPT = """
+You are an expert communication coach analyzing a transcript of a live conversation 
+(between any number of participants). Your goal is to help people have warmer, more 
+respectful, and engaging conversations by providing post-conversation insights.
 
+'Rizz' in this context means the blend of warmth, attentiveness, reciprocity, and 
+conversational flow. It does not measure attractiveness, charisma, or intelligence — 
+only how naturally and respectfully the exchange connects both speakers.
+
+Analyze the transcript using these conversational signals:
+- Reciprocity and turn-taking: balanced talk time, low interruption rate.
+- Attentiveness: question rate, follow-ups referencing prior details.
+- Warmth: sentiment trajectory, positive acknowledgments, appreciation phrases.
+- Comfort and pacing: speaking rate stability, pause tolerance.
+
+Compute normalized sub-scores for Warmth, Attentiveness, Reciprocity, and Comfort, then 
+aggregate them into a 0–100 Conversation Rizz Score. Provide:
+1. The total score and sub-scores.
+2. A short, natural-language summary (1–2 sentences).
+3. 2–3 concise, forward-looking tips to improve future communication.
+
+All feedback must be:
+- Personalized to the tone, flow, and content of the conversation.
+- Actionable and forward-looking.
+- Respectful, constructive, and human-sounding.
+
+Your output should follow this format:
+Conversation Rizz: [0–100]
+Warmth: [score], Attentiveness: [score], Reciprocity: [score], Comfort: [score]
+Summary: [1–2 sentences]
+Tips: [2–3 short, forward-looking suggestions]
+"""
 
 def custom_strip(s: str, chars: str = None) -> str:
     # ... (this function remains unchanged)
@@ -41,36 +72,42 @@ def custom_strip(s: str, chars: str = None) -> str:
     return s[start_index : end_index + 1]
 
 
-def get_communication_feedback(transcript_text: str) -> str:
-    """
-    Analyzes a transcript and returns one sentence of communication feedback.
-    """
+def _call_llm(prompt: str, transcript: str, max_tokens: int) -> str:
+    """Helper function to call the Baseten API."""
+    api_key = os.getenv("BASETEN_API_KEY")
+    if not api_key:
+        raise ValueError("BASETEN_API_KEY not found in environment variables.")
+
+    client = OpenAI(api_key=api_key, base_url="https://inference.baseten.co/v1")
+    
     try:
-        # Get the API key from the environment variable
-        api_key = os.getenv("BASETEN_API_KEY")
-        if not api_key:
-            raise ValueError("BASETEN_API_KEY not found in environment variables.")
-
-        client = OpenAI(
-            api_key=api_key, 
-            base_url="https://inference.baseten.co/v1"
-        )
-
         response = client.chat.completions.create(
             model="openai/gpt-oss-120b",
             messages=[
-                {"role": "system", "content": COMMUNICATION_COACH_PROMPT},
-                {"role": "user", "content": transcript_text}
+                {"role": "system", "content": prompt},
+                {"role": "user", "content": transcript}
             ],
-            max_tokens=150,
+            max_tokens=max_tokens,
             temperature=0.7,
             stream=False
         )
-        
         if response.choices:
-            return response.choices[0].message.content or ""#custom_strip(response.choices[0].message.content or "")
-        return "No feedback was generated."
-
+            content = custom_strip(response.choices[0].message.content or "")
+            if content:
+                return content
+        # If the response is empty, return a clear message
+        return "The model returned an empty response."
+        
     except Exception as e:
-        print(f"An error occurred: {e}")
-        return "Error: Could not get feedback from the LLM."
+        print(f"An error occurred while calling the API: {e}")
+        return "Could not generate feedback due to an API error."
+
+
+def get_live_feedback_nudge(transcript_text: str) -> str:
+    """Analyzes a transcript and returns a single, live nudge."""
+    return _call_llm(LIVE_NUDGE_PROMPT, transcript_text, 150)
+
+
+def get_final_summary(transcript_text: str) -> str:
+    """Analyzes a full transcript and returns a final summary report."""
+    return _call_llm(FINAL_SUMMARY_PROMPT, transcript_text, 300)
