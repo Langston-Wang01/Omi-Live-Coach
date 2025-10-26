@@ -1,4 +1,4 @@
-# Omi Rizz App
+# Omi Rizz Meter for Dates (Conversational Coaching)
 
 A real-time conversation analysis tool that listens to Omi's live transcription and provides Rizz scores, summaries, suggestions, and live feedback during and after conversations.
 
