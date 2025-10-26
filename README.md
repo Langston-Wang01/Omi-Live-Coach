@@ -1,5 +1,5 @@
 # Omi Rizz App
-
+l
 A real-time conversation analysis tool that listens to Omi's live transcription and provides Rizz scores, summaries, suggestions, and live feedback during and after conversations.
 
 ## Goal
@@ -34,11 +34,6 @@ BASETEN_API_KEY=your_key
 ### Run the FastAPI server
 ```bash
 uvicorn main:app --reload --port 8000
-```
-
-### Test locally
-```bash
-python live_conversation_example.py
 ```
 
 ## Summary
